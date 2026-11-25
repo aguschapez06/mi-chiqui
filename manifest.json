@@ -1,0 +1,10 @@
+{
+  "name": "Mi Chiqui",
+  "short_name": "Mi Chiqui",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F9EEF2",
+  "theme_color": "#C77F9D",
+  "description": "Un pequeño espacio hecho con amor."
+}
