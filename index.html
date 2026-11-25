@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Chiqui</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel='manifest' href='manifest.json'>
+  <link rel="apple-touch-icon" href="icons/icon-512.png">
+  <meta name='theme-color' content='#C77F9D'>
+  <meta name='apple-mobile-web-app-capable' content='yes'>
+  <meta name='apple-mobile-web-app-status-bar-style' content='default'>
+  <meta name='apple-mobile-web-app-title' content='Mi Chiqui'>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Montserrat:wght@400;500&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="app">
+    <section class="welcome" id="welcome">
+      <div class="heart">&#9825;</div>
+      <h1>Hola mi amor</h1>
+      <p>Qué lindo tenerte acá chiqui</p>
+      <button id="nextButton">Siguiente</button>
+    </section>
+    <section class="emotions hidden" id="emotions">
+      <div class="heart">&#9825;</div>
+      <h1>¿Cómo está hoy mi peque?</h1>
+      <p>Podés elegir varias &#9825;</p>
+      <div class="emotion-list" id="emotionList"></div>
+      <button id="confirmButton">Continuar <span>&#9825;</span></button>
+    </section>
+  </main>
+  <script src="app.js"></script>
+  <script src="estadisticas-periodos.js"></script>
+  <script src="momentitos.js"></script>
+  <script>
+    if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("service-worker.js").catch(function (error) { console.error("No se pudo registrar el Service Worker:", error); });
+      });
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
