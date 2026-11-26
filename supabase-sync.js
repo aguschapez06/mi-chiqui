@@ -30,7 +30,7 @@
     if (gate) return gate;
     gate = document.createElement("div");
     gate.id = "mc-cloud-gate";
-    gate.innerHTML = '<div id="mc-cloud-card"><div class="mc-heart">Mi Chiqui</div><h1>Mi Chiqui</h1><p>Un espacio privado para compartir nuestros recuerdos, cartitas y momentos.</p><div id="mc-cloud-actions"><button id="mc-cloud-create">Crear nuestro espacio</button><button id="mc-cloud-join" class="mc-secondary">Ya tengo un código</button></div><div id="mc-cloud-status">Conectando de forma segura…</div></div>';
+    gate.innerHTML = '<div id="mc-cloud-card"><div class="mc-heart">Mi Chiqui</div><h1>Mi Chiqui</h1><p>Un espacio privado para compartir nuestros recuerdos, cartitas y momentos.</p><div id="mc-cloud-actions"><button id="mc-cloud-create">Crear nuestro espacio</button><button id="mc-cloud-join" class="mc-secondary">Ya tengo un codigo</button></div><div id="mc-cloud-status">Conectando de forma segura...</div></div>';
     document.body.appendChild(gate);
     return gate;
   }
@@ -43,21 +43,35 @@
   async function start() {
     makeGate();
     try {
-      if (!window.supabase || !window.supabase.createClient) throw new Error("No se pudo cargar el servicio de conexión. Revisá tu conexión a internet.");
+      if (!window.supabase || !window.supabase.createClient) throw new Error("No se pudo cargar el servicio de conexión. Revisa tu conexión a internet.");
       client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       let sessionResult = await client.auth.getSession();
       if (sessionResult.error) throw sessionResult.error;
       if (!sessionResult.data.session) {
-        status("Preparando tu acceso…");
+        status("Preparando tu acceso...");
         const authResult = await client.auth.signInAnonymously();
         if (authResult.error) throw authResult.error;
       }
 
       const savedSpace = localStorage.getItem(SPACE_KEY);
       if (savedSpace) {
-        status("Verificando nuestro espacio…");
+        status("Verificando nuestro espacio...");
         const check = await client.from("couple_members").select("space_id").eq("space_id", savedSpace).maybeSingle();
         if (!check.error && check.data) {
+          const spaceInfo = await client.from("couple_spaces").select("invite_code").eq("id", savedSpace).maybeSingle();
+          if (!spaceInfo.error && spaceInfo.data && spaceInfo.data.invite_code) {
+            const actions = document.getElementById("mc-cloud-actions");
+            actions.innerHTML = '<p>Este es el codigo para vincular el otro celular:</p><input id="mc-cloud-code" readonly><button id="mc-cloud-continue">Continuar</button>';
+            document.getElementById("mc-cloud-code").value = spaceInfo.data.invite_code;
+            document.getElementById("mc-cloud-continue").addEventListener("click", () => {
+              document.getElementById("mc-cloud-gate").hidden = true;
+              window.miChiquiSupabase = client;
+              window.miChiquiSpaceId = savedSpace;
+              document.dispatchEvent(new CustomEvent("miChiquiCloudReady"));
+            });
+            status("Recuperamos tu codigo. Compartilo con Chiqui para vincular su celular.");
+            return;
+          }
           document.getElementById("mc-cloud-gate").hidden = true;
           window.miChiquiSupabase = client;
           window.miChiquiSpaceId = savedSpace;
@@ -66,7 +80,7 @@
         }
         localStorage.removeItem(SPACE_KEY);
       }
-      status("Elegí cómo querés conectar este celular.");
+      status("Elegi cómo querés conectar este celular.");
       document.getElementById("mc-cloud-create").addEventListener("click", createSpace);
       document.getElementById("mc-cloud-join").addEventListener("click", showJoin);
     } catch (error) {
@@ -76,14 +90,14 @@
   }
 
   async function createSpace() {
-    status("Creando nuestro espacio…");
+    status("Creando nuestro espacio...");
     const result = await client.rpc("create_my_space");
     if (result.error) { status(result.error.message || "No se pudo crear el espacio."); return; }
     const row = Array.isArray(result.data) ? result.data[0] : result.data;
-    if (!row || !row.space_id || !row.invite_code) { status("El espacio se creó, pero no pudimos leer el código. Avisame."); return; }
+    if (!row || !row.space_id || !row.invite_code) { status("El espacio se creó, pero no pudimos leer el codigo. Avisame."); return; }
     localStorage.setItem(SPACE_KEY, row.space_id);
     const actions = document.getElementById("mc-cloud-actions");
-    actions.innerHTML = '<p>¡Nuestro espacio está creado!</p><p>Este es el código para vincular el otro celular:</p><input id="mc-cloud-code" readonly><button id="mc-cloud-continue">Continuar</button>';
+    actions.innerHTML = '<p>¡Nuestro espacio está creado!</p><p>Este es el codigo para vincular el otro celular:</p><input id="mc-cloud-code" readonly><button id="mc-cloud-continue">Continuar</button>';
     document.getElementById("mc-cloud-code").value = row.invite_code;
     document.getElementById("mc-cloud-continue").addEventListener("click", () => {
       document.getElementById("mc-cloud-gate").hidden = true;
@@ -91,7 +105,7 @@
       window.miChiquiSpaceId = row.space_id;
       document.dispatchEvent(new CustomEvent("miChiquiCloudReady"));
     });
-    status("Guardá este código y compartilo con Chiqui. Se ingresa una sola vez.");
+    status("Guarda este codigo y compartilo con Chiqui. Se ingresa una sola vez.");
   }
 
   function showJoin() {
@@ -99,16 +113,16 @@
     actions.innerHTML = '<input id="mc-cloud-invite" maxlength="8" autocomplete="off" placeholder="Código de 8 caracteres"><button id="mc-cloud-submit">Vincular este celular</button><button id="mc-cloud-back" class="mc-secondary">Volver</button>';
     document.getElementById("mc-cloud-submit").addEventListener("click", joinSpace);
     document.getElementById("mc-cloud-back").addEventListener("click", () => location.reload());
-    status("Ingresá el código que te compartieron.");
+    status("Ingresa el codigo que te compartieron.");
   }
 
   async function joinSpace() {
     const input = document.getElementById("mc-cloud-invite");
     const code = (input.value || "").trim().toUpperCase();
-    if (code.length !== 8) { status("El código tiene que tener 8 caracteres."); return; }
-    status("Vinculando este celular…");
+    if (code.length !== 8) { status("El codigo tiene que tener 8 caracteres."); return; }
+    status("Vinculando este celular...");
     const result = await client.rpc("join_space_with_code", { p_invite_code: code });
-    if (result.error) { status(result.error.message || "No se pudo vincular. Revisá el código."); return; }
+    if (result.error) { status(result.error.message || "No se pudo vincular. Revisa el codigo."); return; }
     const spaceId = result.data;
     if (!spaceId) { status("No pudimos confirmar el espacio."); return; }
     localStorage.setItem(SPACE_KEY, spaceId);
