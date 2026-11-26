@@ -71,11 +71,11 @@ showSection = function(item) {
 };
 function showLetters() {
   const home = document.getElementById("home"); home.innerHTML = "";
-  const title = document.createElement("h1"); title.textContent = "Cartitas ♡"; home.appendChild(title);
+  const title = document.createElement("h1"); title.textContent = "Cartitas"; home.appendChild(title);
   const subtitle = document.createElement("p"); subtitle.textContent = "Unas palabras para cada momento."; home.appendChild(subtitle);
   const categories = ["Para cuando estés triste","Para cuando estés feliz","Para cuando me extrañes","Para cuando necesites un abrazo","Para cualquier momento"];
   categories.forEach(category => {
-    const button = document.createElement("button"); button.className = "home-card"; button.textContent = category + "  ♡";
+    const button = document.createElement("button"); button.className = "home-card"; button.textContent = category;
     button.addEventListener("click", () => openLetterCategory(category)); home.appendChild(button);
   });
   const back = document.createElement("button"); back.textContent = "Volver a Mi espacio"; back.addEventListener("click", showHome); home.appendChild(back);
@@ -83,14 +83,14 @@ function showLetters() {
 function openLetterCategory(category) {
   const home = document.getElementById("home"); home.innerHTML = "";
   const title = document.createElement("h1"); title.textContent = category; home.appendChild(title);
-  const subtitle = document.createElement("p"); subtitle.textContent = "Palabras escritas especialmente para vos ♡"; home.appendChild(subtitle);
+  const subtitle = document.createElement("p"); subtitle.textContent = "Palabras escritas especialmente para vos."; home.appendChild(subtitle);
   const form = document.createElement("form"); form.className = "letter-form";
   const heading = document.createElement("input"); heading.placeholder = "Título de la cartita"; heading.required = true; heading.className = "letter-input";
   const content = document.createElement("textarea"); content.placeholder = "Escribí acá tu cartita..."; content.required = true; content.className = "letter-textarea";
-  const save = document.createElement("button"); save.type = "submit"; save.textContent = "Guardar cartita ♡";
+  const save = document.createElement("button"); save.type = "submit"; save.textContent = "Guardar cartita";
   form.append(heading, content, save); home.appendChild(form);
   const listTitle = document.createElement("h2");
-  listTitle.textContent = "Tus sobres, mi chiqui ♡";
+  listTitle.textContent = "Tus sobres, mi chiqui";
   home.appendChild(listTitle);
 
   const list = document.createElement("div");
@@ -123,7 +123,7 @@ flap.className = "letter-envelope-flap";
 
 const heart = document.createElement("span");
 heart.className = "letter-envelope-heart";
-heart.textContent = "♡";
+heart.textContent = "";
 
 envelope.append(flap, heart);
 
@@ -144,7 +144,7 @@ envelope.append(flap, heart);
         opened = !opened;
         body.hidden = !opened;
         card.classList.toggle("letter-open", opened);
-        envelope.textContent = opened ? "✉" : "♡";
+        envelope.textContent = opened ? "CERRAR" : "ABRIR";
       });
 
       const remove = document.createElement("button");
