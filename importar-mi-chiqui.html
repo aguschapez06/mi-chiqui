@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#C77F9D">
+  <title>Importar datos · Mi Chiqui</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      padding: 24px; background: #F9EEF2; color: #68485A;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      width: min(100%, 440px); padding: 28px; border-radius: 22px;
+      background: #fff; box-shadow: 0 12px 36px rgba(110, 65, 85, .10);
+      text-align: center;
+    }
+    .heart { font-size: 34px; margin-bottom: 8px; }
+    h1 { margin: 0 0 10px; font-family: Georgia, serif; font-weight: 500; }
+    p { line-height: 1.55; color: #806878; }
+    input { display: block; width: 100%; margin: 22px 0 14px; }
+    button {
+      width: 100%; border: 0; border-radius: 999px; padding: 14px 18px;
+      background: #C77F9D; color: white; font-size: 16px; cursor: pointer;
+    }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    #status { min-height: 24px; font-size: 14px; }
+    .small { font-size: 12px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="heart">♡</div>
+    <h1>Mi Chiqui</h1>
+    <p>Elegí el archivo <strong>mi-chiqui-datos.json</strong> que guardaste en tu iPhone para cargar tus cartitas, fechas, música y tema.</p>
+    <input id="file" type="file" accept=".json,application/json">
+    <button id="import" disabled>Importar mis datos</button>
+    <p id="status" role="status" aria-live="polite"></p>
+    <p class="small">El archivo se procesa en este dispositivo. Su contenido no se publica en GitHub ni se envía a ningún servidor.</p>
+  </main>
+  <script>
+    const fileInput = document.getElementById("file");
+    const importButton = document.getElementById("import");
+    const status = document.getElementById("status");
+    fileInput.addEventListener("change", () => {
+      importButton.disabled = !fileInput.files || !fileInput.files[0];
+      status.textContent = "";
+    });
+    importButton.addEventListener("click", () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const data = JSON.parse(reader.result);
+          const keys = Object.keys(data);
+          const letterKeys = keys.filter(k => k.startsWith("miChiquiLetters_"));
+          if (letterKeys.length !== 5 || !data.miChiquiDates || !data.miChiquiMusic) {
+            throw new Error("El archivo no contiene las cinco cartitas, las fechas y la música esperadas.");
+          }
+          keys.forEach(key => {
+            if (
+              key === "miChiquiDates" ||
+              key === "miChiquiNotes" ||
+              key === "miChiquiMusic" ||
+              key === "miChiquiTheme" ||
+              key.startsWith("miChiquiLetters_")
+            ) {
+              if (typeof data[key] !== "string") throw new Error("El formato de " + key + " no es válido.");
+              JSON.parse(data[key]);
+              localStorage.setItem(key, data[key]);
+            }
+          });
+          status.textContent = "¡Datos importados! Abriendo Mi Chiqui… ♡";
+          importButton.disabled = true;
+          setTimeout(() => { window.location.href = "./"; }, 900);
+        } catch (error) {
+          status.textContent = "No se pudo importar: " + error.message;
+        }
+      };
+      reader.onerror = () => { status.textContent = "No se pudo leer el archivo. Probá seleccionarlo otra vez."; };
+      reader.readAsText(file, "UTF-8");
+    });
+  </script>
+</body>
+</html>
