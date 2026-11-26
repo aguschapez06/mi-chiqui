@@ -191,27 +191,30 @@ function showDates() {
   form.append(name, date, description, save); home.appendChild(form);
   const heading = document.createElement("h2"); heading.textContent = "Nuestros días"; home.appendChild(heading);
   const list = document.createElement("div"); list.className = "saved-letters"; home.appendChild(list);
-  const key = "miChiquiDates";   const initialDates = [
+  const key = "miChiquiDates";
+  const initialDates = [
     {
-      name: "El día que nos conocimos ♡",
+      name: "El comienzo de nuestro para siempre ♡",
       date: "2026-01-13",
-      description: "El día en que nos vimos por primera vez y comenzó todo."
+      description: "Porque ese día nos conocimos por primera vez y sin saberlo estábamos dando el primer paso hacia todo lo lindo que iba a venir luego."
     },
     {
-      name: "El día que nos pusimos de novios ♡",
+      name: "El día en que nos elegimos ♡",
       date: "2026-02-17",
-      description: "El día en que comenzamos oficialmente nuestra relación."
+      description: "Porque ese día dejamos de ser dos personas que se estaban conociendo para empezar a construir algo juntos. Fue el comienzo de nuestra relación y de una de las partes más lindas de mi vida."
     }
   ];
 
   const existingDates = JSON.parse(localStorage.getItem(key) || "[]");
-
   initialDates.forEach(initialDate => {
-    if (!existingDates.some(entry => entry.date === initialDate.date)) {
+    const index = existingDates.findIndex(entry => entry.date === initialDate.date);
+    if (index === -1) {
       existingDates.push(initialDate);
+    } else {
+      existingDates[index].name = initialDate.name;
+      existingDates[index].description = initialDate.description;
     }
   });
-
   localStorage.setItem(key, JSON.stringify(existingDates));
   function render() {
     list.innerHTML = "";
@@ -310,6 +313,12 @@ function showMusic() {
   const heading = document.createElement("h2"); heading.textContent = "Nuestra lista"; home.appendChild(heading);
   const list = document.createElement("div"); list.className = "saved-letters"; home.appendChild(list);
   const key = "miChiquiMusic";
+  const savedSongs = JSON.parse(localStorage.getItem(key) || "[]");
+  const favoriteSong = savedSongs.find(entry => entry.song === "Can't Help Falling in Love");
+  if (favoriteSong) {
+    favoriteSong.note = "Porque sé lo mucho que te gusta y lo tanto que anhelás que nos casemos con ella, entonces quería guardarla acá para que siempre tenga un lugarcito en nuestra vida e historia.";
+    localStorage.setItem(key, JSON.stringify(savedSongs));
+  }
   function render() {
     list.innerHTML = "";
     const songs = JSON.parse(localStorage.getItem(key) || "[]");
