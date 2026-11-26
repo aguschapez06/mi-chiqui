@@ -819,7 +819,7 @@ openLetterCategory = function(category) {
     home.appendChild(title);
 
     const subtitle = document.createElement("p");
-    subtitle.textContent = "Unas palabras escritas especialmente para vos ♡";
+    subtitle.textContent = "Unas palabras escritas especialmente para vos ";
     home.appendChild(subtitle);
 
     const form = document.createElement("form");
@@ -837,7 +837,7 @@ openLetterCategory = function(category) {
 
     const save = document.createElement("button");
     save.type = "submit";
-    save.textContent = "Guardar cartita ♡";
+    save.textContent = "Guardar cartita ";
 
     form.append(heading, content, save);
     home.appendChild(form);
@@ -875,7 +875,7 @@ openLetterCategory = function(category) {
 
         const heart = document.createElement("span");
         heart.className = "letter-envelope-heart";
-        heart.textContent = "♡";
+        heart.textContent = "";
 
         envelope.append(flap, heart);
 
