@@ -30,7 +30,7 @@
     if (gate) return gate;
     gate = document.createElement("div");
     gate.id = "mc-cloud-gate";
-    gate.innerHTML = '<div id="mc-cloud-card"><div class="mc-heart">♡</div><h1>Mi Chiqui</h1><p>Un espacio privado para compartir nuestros recuerdos, cartitas y momentos.</p><div id="mc-cloud-actions"><button id="mc-cloud-create">Crear nuestro espacio</button><button id="mc-cloud-join" class="mc-secondary">Ya tengo un código</button></div><div id="mc-cloud-status">Conectando de forma segura…</div></div>';
+    gate.innerHTML = '<div id="mc-cloud-card"><div class="mc-heart">Mi Chiqui</div><h1>Mi Chiqui</h1><p>Un espacio privado para compartir nuestros recuerdos, cartitas y momentos.</p><div id="mc-cloud-actions"><button id="mc-cloud-create">Crear nuestro espacio</button><button id="mc-cloud-join" class="mc-secondary">Ya tengo un código</button></div><div id="mc-cloud-status">Conectando de forma segura…</div></div>';
     document.body.appendChild(gate);
     return gate;
   }
@@ -83,7 +83,7 @@
     if (!row || !row.space_id || !row.invite_code) { status("El espacio se creó, pero no pudimos leer el código. Avisame."); return; }
     localStorage.setItem(SPACE_KEY, row.space_id);
     const actions = document.getElementById("mc-cloud-actions");
-    actions.innerHTML = '<p>¡Nuestro espacio está creado! ♡</p><p>Este es el código para vincular el otro celular:</p><input id="mc-cloud-code" readonly><button id="mc-cloud-continue">Continuar</button>';
+    actions.innerHTML = '<p>¡Nuestro espacio está creado!</p><p>Este es el código para vincular el otro celular:</p><input id="mc-cloud-code" readonly><button id="mc-cloud-continue">Continuar</button>';
     document.getElementById("mc-cloud-code").value = row.invite_code;
     document.getElementById("mc-cloud-continue").addEventListener("click", () => {
       document.getElementById("mc-cloud-gate").hidden = true;
