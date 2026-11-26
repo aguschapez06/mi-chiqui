@@ -53,32 +53,48 @@
         if (authResult.error) throw authResult.error;
       }
 
-      const savedSpace = localStorage.getItem(SPACE_KEY);
+      let savedSpace = localStorage.getItem(SPACE_KEY);
+      const current = await client.auth.getUser();
+      if (current.error || !current.data.user) throw current.error || new Error("No encontramos tu usuario.");
       if (savedSpace) {
         status("Verificando nuestro espacio...");
-        const check = await client.from("couple_members").select("space_id").eq("space_id", savedSpace).maybeSingle();
-        if (!check.error && check.data) {
-          const spaceInfo = await client.from("couple_spaces").select("invite_code").eq("id", savedSpace).maybeSingle();
-          if (!spaceInfo.error && spaceInfo.data && spaceInfo.data.invite_code) {
-            const actions = document.getElementById("mc-cloud-actions");
-            actions.innerHTML = '<p>Este es el codigo para vincular el otro celular:</p><input id="mc-cloud-code" readonly><button id="mc-cloud-continue">Continuar</button>';
-            document.getElementById("mc-cloud-code").value = spaceInfo.data.invite_code;
-            document.getElementById("mc-cloud-continue").addEventListener("click", () => {
-              document.getElementById("mc-cloud-gate").hidden = true;
-              window.miChiquiSupabase = client;
-              window.miChiquiSpaceId = savedSpace;
-              document.dispatchEvent(new CustomEvent("miChiquiCloudReady"));
-            });
-            status("Recuperamos tu codigo. Compartilo con Chiqui para vincular su celular.");
-            return;
-          }
-          document.getElementById("mc-cloud-gate").hidden = true;
-          window.miChiquiSupabase = client;
-          window.miChiquiSpaceId = savedSpace;
-          document.dispatchEvent(new CustomEvent("miChiquiCloudReady"));
+        const check = await client.from("couple_members").select("space_id").eq("space_id", savedSpace).eq("user_id", current.data.user.id).maybeSingle();
+        if (check.error) throw check.error;
+        if (!check.data) savedSpace = null;
+      }
+      if (!savedSpace) {
+        status("Buscando el espacio que ya habias creado...");
+        const membership = await client.from("couple_members").select("space_id").eq("user_id", current.data.user.id).maybeSingle();
+        if (membership.error) throw membership.error;
+        if (membership.data) {
+          savedSpace = membership.data.space_id;
+          localStorage.setItem(SPACE_KEY, savedSpace);
+        }
+      }
+      if (savedSpace) {
+        status("Recuperando el codigo de nuestro espacio...");
+        const spaceInfo = await client.from("couple_spaces").select("invite_code").eq("id", savedSpace).maybeSingle();
+        if (spaceInfo.error) throw spaceInfo.error;
+        if (spaceInfo.data && spaceInfo.data.invite_code) {
+          const actions = document.getElementById("mc-cloud-actions");
+          actions.innerHTML = '<p>Este es el codigo para vincular el otro celular:</p><input id="mc-cloud-code" readonly><button id="mc-cloud-copy">Copiar codigo</button><button id="mc-cloud-continue">Continuar</button>';
+          document.getElementById("mc-cloud-code").value = spaceInfo.data.invite_code;
+          document.getElementById("mc-cloud-copy").addEventListener("click", async () => {
+            const codeInput = document.getElementById("mc-cloud-code");
+            codeInput.select();
+            try { await navigator.clipboard.writeText(codeInput.value); status("Codigo copiado. Ya podes compartirlo con Chiqui."); }
+            catch (_) { status("Selecciona el codigo y copialo manualmente."); }
+          });
+          document.getElementById("mc-cloud-continue").addEventListener("click", () => {
+            document.getElementById("mc-cloud-gate").hidden = true;
+            window.miChiquiSupabase = client;
+            window.miChiquiSpaceId = savedSpace;
+            document.dispatchEvent(new CustomEvent("miChiquiCloudReady"));
+          });
+          status("Encontramos tu espacio. Guarda y comparti este codigo con Chiqui.");
           return;
         }
-        localStorage.removeItem(SPACE_KEY);
+        throw new Error("Encontramos tu espacio, pero no pudimos leer el codigo. No crees otro espacio; avisame.");
       }
       status("Elegi cómo querés conectar este celular.");
       document.getElementById("mc-cloud-create").addEventListener("click", createSpace);
