@@ -30,7 +30,7 @@
     if (gate) return gate;
     gate = document.createElement("div");
     gate.id = "mc-cloud-gate";
-    gate.innerHTML = '<div id="mc-cloud-card"><h1>Nuestro espacio</h1><p>Un espacio privado para compartir nuestros recuerdos, cartitas y momentos.</p><div id="mc-cloud-actions"><button id="mc-cloud-join">Tengo un codigo</button></div><div id="mc-cloud-status"></div></div>';
+    gate.innerHTML = '<div id="mc-cloud-card"><h1>Nuestro espacio</h1><div id="mc-cloud-actions"><button id="mc-cloud-create">Crear un espacio</button><button id="mc-cloud-join" class="mc-secondary">Tengo un código</button></div><div id="mc-cloud-status"></div></div>';
     document.body.appendChild(gate);
     return gate;
   }
@@ -73,7 +73,8 @@
         document.dispatchEvent(new CustomEvent("miChiquiCloudReady"));
         return;
       }
-      status("Escribi el codigo que te compartieron.");
+      status("");
+      document.getElementById("mc-cloud-create").addEventListener("click", createSpace);
       document.getElementById("mc-cloud-join").addEventListener("click", showJoin);
     } catch (error) {
       console.error("Mi Chiqui conexion:", error);
@@ -88,16 +89,10 @@
     const row = Array.isArray(result.data) ? result.data[0] : result.data;
     if (!row || !row.space_id || !row.invite_code) { status("El espacio se creo, pero no pudimos leer el codigo. Avisame."); return; }
     localStorage.setItem(SPACE_KEY, row.space_id);
-    const actions = document.getElementById("mc-cloud-actions");
-    actions.innerHTML = '<p>Nuestro espacio esta creado!</p><p>Este es el codigo para vincular el otro celular:</p><input id="mc-cloud-code" readonly><button id="mc-cloud-continue">Continuar</button>';
-    document.getElementById("mc-cloud-code").value = row.invite_code;
-    document.getElementById("mc-cloud-continue").addEventListener("click", () => {
-      document.getElementById("mc-cloud-gate").hidden = true;
-      window.miChiquiSupabase = client;
-      window.miChiquiSpaceId = row.space_id;
-      document.dispatchEvent(new CustomEvent("miChiquiCloudReady"));
-    });
-    status("Guarda este codigo y compartilo con Chiqui. Se ingresa una sola vez.");
+    document.getElementById("mc-cloud-gate").hidden = true;
+    window.miChiquiSupabase = client;
+    window.miChiquiSpaceId = row.space_id;
+    document.dispatchEvent(new CustomEvent("miChiquiCloudReady"));
   }
 
   function showJoin() {
