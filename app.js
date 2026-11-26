@@ -345,7 +345,7 @@ showSection = function(item) {
   if (item.title === "Fechas especiales") { showDates(); return; }
   if (item.title === "Nuestra música") { showMusic(); return; }
   if (item.title === "Para vos") { showForYou(); return; }
-if (item.title === "Notas") { showNotes(); return; }
+if (item.title === "Dates") { showNotes(); return; }
   const home = document.getElementById("home"); home.innerHTML = "";
   const title = document.createElement("h1"); title.textContent = item.title; home.appendChild(title);
   const back = document.createElement("button"); back.textContent = "Volver"; back.addEventListener("click", showHome); home.appendChild(back);
