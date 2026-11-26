@@ -769,14 +769,14 @@ openLetterCategory = function(category) {
   function showCategory() {
     home.innerHTML = "";
     const title = document.createElement("h1"); title.textContent = category; home.appendChild(title);
-    const subtitle = document.createElement("p"); subtitle.textContent = "Elegí una cartita para leerla, mi amor ♡"; home.appendChild(subtitle);
+    const subtitle = document.createElement("p"); subtitle.textContent = "Elegí una cartita para leerla, mi amor"; home.appendChild(subtitle);
     const key = "miChiquiLetters_" + category;
     const list = document.createElement("div"); list.className = "saved-letters"; home.appendChild(list);
     const letters = JSON.parse(localStorage.getItem(key) || "[]");
     if (!letters.length) { const empty = document.createElement("p"); empty.textContent = "Todavía no hay cartitas en esta categoría."; list.appendChild(empty); }
     letters.forEach((letter,index) => {
       const card = document.createElement("article"); card.className = "letter-card";
-      const open = document.createElement("button"); open.textContent = letter.title + " ♡";
+      const open = document.createElement("button"); open.textContent = letter.title + "";
       open.addEventListener("click", () => showLetter(letter)); card.appendChild(open);
       const remove = document.createElement("button"); remove.textContent = "Eliminar"; remove.className = "delete-letter";
       remove.addEventListener("click", () => { const updated = JSON.parse(localStorage.getItem(key) || "[]").filter((entry,i) => i !== index); localStorage.setItem(key,JSON.stringify(updated)); showCategory(); });
