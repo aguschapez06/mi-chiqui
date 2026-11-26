@@ -30,7 +30,7 @@
     if (gate) return gate;
     gate = document.createElement("div");
     gate.id = "mc-cloud-gate";
-    gate.innerHTML = '<div id="mc-cloud-card"><div class="mc-heart">Mi Chiqui</div><h1>Mi Chiqui</h1><p>Un espacio privado para compartir nuestros recuerdos, cartitas y momentos.</p><div id="mc-cloud-actions"><button id="mc-cloud-create">Crear nuestro espacio</button><button id="mc-cloud-join" class="mc-secondary">Ya tengo un codigo</button></div><div id="mc-cloud-status">Conectando de forma segura...</div></div>';
+    gate.innerHTML = '<div id="mc-cloud-card"><h1>Mi Chiqui</h1><p>Un espacio privado para compartir nuestros recuerdos, cartitas y momentos.</p><div id="mc-cloud-actions"><button id="mc-cloud-create">Crear nuestro espacio</button><button id="mc-cloud-join" class="mc-secondary">Ya tengo un codigo</button></div><div id="mc-cloud-status">Conectando de forma segura...</div></div>';
     document.body.appendChild(gate);
     return gate;
   }
