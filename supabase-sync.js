@@ -73,12 +73,17 @@
   }
 
   async function loadInviteButton() {
-    const result = await client.rpc("get_my_space_invite_code");
-    if (result.error) {
-      console.error("Mi Chiqui invitacion:", result.error);
-      return;
+    try {
+      const result = await client.rpc("get_my_space_invite_code");
+      if (result.error) throw result.error;
+      let code = result.data;
+      if (Array.isArray(code)) code = code[0] && (code[0].invite_code || code[0].get_my_space_invite_code);
+      if (code && typeof code === "object") code = code.invite_code || code.get_my_space_invite_code;
+      if (!code) throw new Error("La invitación no devolvió un código.");
+      addShareButton(String(code));
+    } catch (error) {
+      console.error("Mi Chiqui invitacion:", error);
     }
-    addShareButton(result.data);
   }
 
   async function start() {
