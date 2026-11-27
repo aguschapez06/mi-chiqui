@@ -1,7 +1,7 @@
 /* Actualiza una sola vez las cinco cartitas de Mi Chiqui. */
 (function () {
   "use strict";
-  const migrationKey = "miChiquiLettersNatural_v1";
+  const migrationKey = "miChiquiLettersNatural_v2";
   if (localStorage.getItem(migrationKey) === "1") return;
 
   const letters = {
