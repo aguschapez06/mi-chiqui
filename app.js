@@ -136,7 +136,7 @@ envelope.append(flap, heart);
       body.hidden = true;
 
       const message = document.createElement("p");
-      message.textContent = letter.content;
+      message.textContent = String(letter.content || "").replace(/[\r\n]+/g, " ");
       body.appendChild(message);
 
       let opened = false;
