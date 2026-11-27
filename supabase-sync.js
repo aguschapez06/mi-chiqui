@@ -18,7 +18,7 @@
       #mc-cloud-card button.mc-secondary{background:#f2dce5;color:#78475c}
       #mc-cloud-status{font-size:12px;min-height:20px;margin-top:12px;color:#9b5573}
       #mc-cloud-gate[hidden]{display:none}
-      #mc-cloud-share{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:99990;border:0;border-radius:999px;background:#c77f9d;color:#fff;padding:12px 17px;box-shadow:0 5px 18px #68435430;font:500 12px Montserrat,Arial;cursor:pointer}
+      #mc-cloud-share{position:fixed;right:16px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:999;border:0;border-radius:999px;background:#c77f9d;color:#fff;padding:12px 17px;box-shadow:0 5px 18px #68435430;font:500 12px Montserrat,Arial;cursor:pointer}
     `;
     document.head.appendChild(style);
   }
