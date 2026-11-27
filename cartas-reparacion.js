@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  const flag = "miChiquiLettersCompact_v2";
+  const flag = "miChiquiLettersCompact_v3";
   if (localStorage.getItem(flag) === "1") return;
   const keys = [
     "miChiquiLetters_Para cuando me extrañes",
@@ -17,7 +17,7 @@
       if (!Array.isArray(letters)) return;
       letters.forEach(function (letter) {
         if (letter && typeof letter.content === "string") {
-          letter.content = letter.content.replace(/\\s*\\n+\\s*/g, " ").replace(/ {2,}/g, " ").trim();
+          letter.content = letter.content.replace(/\s*\n+\s*/g, " ").replace(/ {2,}/g, " ").trim();
         }
       });
       localStorage.setItem(key, JSON.stringify(letters));
