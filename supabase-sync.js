@@ -62,12 +62,14 @@
     button.addEventListener("click", async function () {
       try {
         await navigator.clipboard.writeText(window.miChiquiInviteUrl);
-        button.textContent = "Enlace copiado ♥";
       } catch (error) {
         window.prompt("Copiá este enlace para Chiqui:", window.miChiquiInviteUrl);
       }
+      button.remove();
     });
-    const nextButton = document.getElementById("nextButton");\n    if (nextButton && nextButton.parentNode) nextButton.insertAdjacentElement("afterend", button);\n    else document.body.appendChild(button);
+    const nextButton = document.getElementById("nextButton");
+    if (nextButton && nextButton.parentNode) nextButton.insertAdjacentElement("afterend", button);
+    else document.body.appendChild(button);
   }
 
   async function loadInviteButton() {
